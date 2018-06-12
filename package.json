@@ -1,7 +1,7 @@
 {
-  "name": "yesod-server",
+  "name": "alas-server",
   "version": "1.0.0",
-  "description": "Project yesod server",
+  "description": "Project alas server",
   "main": "index.js",
   "author": "zuoez02@outlook.com",
   "license": "MIT",
