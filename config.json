@@ -1,3 +1,4 @@
 {
-  "key": "example"
+  "key": "example",
+  "port": 8081
 }

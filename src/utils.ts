@@ -20,4 +20,10 @@ export class Utils {
     fs.writeFileSync(filename, key);
     return filename;
   }
+
+  static readConfig() {
+    const filename = path.resolve(__dirname, '..', 'config.json');
+    const file = fs.readFileSync(filename);
+    return JSON.parse(file.toString());
+  }
 }

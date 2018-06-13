@@ -7,15 +7,14 @@
         ],
         "target": "es5",
         "baseUrl": ".",
-        "resolveJsonModule": true,
+        "outDir": "dist",
         "moduleResolution": "node",
+        "resolveJsonModule": true,
         "paths": {
           "@/*": ["./src/*"]
         }
     },
     "include": [
-      "*.ts",
-      "src/**/*.ts",
       "src/*.ts"
     ],
     "exclude": [

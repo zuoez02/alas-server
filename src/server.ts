@@ -11,9 +11,13 @@ export class Server {
   server: http.Server;
   wss: WsServer;
   rest: Rest;
+  config: any;
   hash: string;
 
-  constructor() {
+  constructor(config) {
+    this.config = Object.assign({
+      port: 8080,
+    }, config);
     this.app = express();
     this.app.use(
       bodyParser.urlencoded({
@@ -22,15 +26,18 @@ export class Server {
     );
     this.app.use(bodyParser.json());
     this.server = http.createServer(this.app);
+
+    if (this.config.key) {
+      this.setKey(this.config.key);
+    }
   }
 
   setKey(key: string) {
     const hash = crypto.createHash('md5').update(key).digest('hex');
     this.hash = hash;
     const filename = Utils.saveKey(hash);
-    console.log(`key ${hash} is used for authorization and saved in ${filename}`);
+    console.log(`[${new Date()}] Key '${hash}' is used for authorization and saved in ${filename}`);
     this.app.use('/*', (req, res, next) => {
-      console.log(hash);
       if (req.headers['alas-key'] !== hash) {
         return res.status(401).send();
       }
@@ -43,9 +50,9 @@ export class Server {
     this.rest = new Rest(this.wss.getDb());
     this.app.use(this.rest.getRouter());
 
-    const port = process.env.PORT || 8999;
+    const port = this.config.port;
     this.server.listen(port, () => {
-      console.log(`Server started on port ${port} :)`);
+      console.log(`[${new Date()}] Server started on port ${port} :)`);
     });
   }
 }
