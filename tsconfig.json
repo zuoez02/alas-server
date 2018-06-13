@@ -5,10 +5,17 @@
           "es2017",
           "es2015"
         ],
-        "baseUrl": "."
+        "target": "es5",
+        "baseUrl": ".",
+        "moduleResolution": "node",
+        "paths": {
+          "@/*": ["./src/*"]
+        }
     },
     "include": [
       "*.ts",
+      "src/**/*.ts",
+      "src/*.ts"
     ],
     "exclude": [
       "node_modules"
