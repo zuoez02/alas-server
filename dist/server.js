@@ -30,12 +30,15 @@ var Server = /** @class */ (function () {
         }
     }
     Server.prototype.setKey = function (key) {
+        if (!key) {
+            return;
+        }
         var hash = crypto_1.default.createHash('md5').update(key).digest('hex');
         this.hash = hash;
         var filename = utils_1.Utils.saveKey(hash);
         console.log("[" + new Date() + "] Key '" + hash + "' is used for authorization and saved in " + filename);
         this.app.use('/*', function (req, res, next) {
-            if (req.headers['alas-key'] !== hash) {
+            if (req.body.token !== hash) {
                 return res.status(401).send();
             }
             next();

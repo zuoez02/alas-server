@@ -38,12 +38,15 @@ export class Server {
   }
 
   setKey(key: string) {
+    if (!key) {
+      return;
+    }
     const hash = crypto.createHash('md5').update(key).digest('hex');
     this.hash = hash;
     const filename = Utils.saveKey(hash);
     console.log(`[${new Date()}] Key '${hash}' is used for authorization and saved in ${filename}`);
     this.app.use('/*', (req, res, next) => {
-      if (req.headers['alas-key'] !== hash) {
+      if (req.body.token !== hash) {
         return res.status(401).send();
       }
       next();
