@@ -17,6 +17,7 @@ export class Server {
   constructor(config) {
     this.config = Object.assign({
       port: 8080,
+      hostname: '0.0.0.0',
     }, config);
     this.app = express();
     this.app.use(
@@ -51,8 +52,8 @@ export class Server {
     this.app.use(this.rest.getRouter());
 
     const port = this.config.port;
-    this.server.listen(port, () => {
-      console.log(`[${new Date()}] Server started on port ${port} :)`);
+    this.server.listen(port, this.config.hostname, () => {
+      console.log(`[${new Date()}] Server started on port ${port} on host ${this.config.hostname}`);
     });
   }
 }

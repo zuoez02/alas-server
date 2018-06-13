@@ -14,6 +14,7 @@ var Server = /** @class */ (function () {
     function Server(config) {
         this.config = Object.assign({
             port: 8080,
+            hostname: '0.0.0.0',
         }, config);
         this.app = express_1.default();
         this.app.use(body_parser_1.default.urlencoded({
@@ -38,12 +39,13 @@ var Server = /** @class */ (function () {
         });
     };
     Server.prototype.start = function () {
+        var _this = this;
         this.wss = new ws_1.WsServer(this.server, this.hash);
         this.rest = new rest_1.Rest(this.wss.getDb());
         this.app.use(this.rest.getRouter());
         var port = this.config.port;
-        this.server.listen(port, function () {
-            console.log("[" + new Date() + "] Server started on port " + port + " :)");
+        this.server.listen(port, this.config.hostname, function () {
+            console.log("[" + new Date() + "] Server started on port " + port + " on host " + _this.config.hostname);
         });
     };
     return Server;
