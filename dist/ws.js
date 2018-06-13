@@ -15,12 +15,27 @@ var WsServer = /** @class */ (function () {
     function WsServer(server, hash) {
         var _this = this;
         this.db = new db_1.ClientDb();
-        this.wss = new ws_1.default.Server({ server: server });
+        this.wss = new ws_1.default.Server({
+            server: server,
+            verifyClient: function (info, cb) {
+                if (!hash) {
+                    return cb(true);
+                }
+                var token = info.req.headers.token;
+                if (!token) {
+                    cb(false, 401, 'Unauthorized');
+                }
+                else {
+                    if (hash === token) {
+                        cb(true);
+                    }
+                    else {
+                        cb(false, 401, 'Unauthorized');
+                    }
+                }
+            },
+        });
         this.wss.on('connection', function (ws, req) {
-            if (hash && req.headers['alas-key'] !== hash) {
-                ws.send('Unauthorized');
-                ws.close();
-            }
             _this.onConnection(ws, req);
         });
     }

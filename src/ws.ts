@@ -21,12 +21,25 @@ export class WsServer {
 
   constructor(server: http.Server, hash?: string) {
     this.db = new ClientDb();
-    this.wss = new WebSocket.Server({ server });
+    this.wss = new WebSocket.Server({
+      server,
+      verifyClient: function(info, cb) {
+        if (!hash) {
+          return cb(true);
+        }
+        const token = info.req.headers.token
+        if (!token) {
+          cb(false, 401, 'Unauthorized');
+        } else {
+          if (hash === token) {
+            cb(true);
+          } else {
+            cb(false, 401, 'Unauthorized');
+          }
+        }
+      },
+    });
     this.wss.on('connection', (ws: WebSocket, req) => {
-      if (hash && req.headers['alas-key'] !== hash) {
-        ws.send('Unauthorized');
-        ws.close();
-      }
       this.onConnection(ws, req);
     });
   }
