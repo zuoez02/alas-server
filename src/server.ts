@@ -26,6 +26,10 @@ export class Server {
       }),
     );
     this.app.use(bodyParser.json());
+    this.app.get('/', (req, res) => {
+      res.send('Alas Server');
+    });
+    
     this.server = http.createServer(this.app);
 
     if (this.config.key) {

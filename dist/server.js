@@ -21,6 +21,9 @@ var Server = /** @class */ (function () {
             extended: true,
         }));
         this.app.use(body_parser_1.default.json());
+        this.app.get('/', function (req, res) {
+            res.send('Alas Server');
+        });
         this.server = http_1.default.createServer(this.app);
         if (this.config.key) {
             this.setKey(this.config.key);
