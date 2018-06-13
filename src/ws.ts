@@ -19,10 +19,14 @@ export class WsServer {
   private wss: WebSocket.Server;
   private db: ClientDb;
 
-  constructor(server: http.Server) {
+  constructor(server: http.Server, hash?: string) {
     this.db = new ClientDb();
     this.wss = new WebSocket.Server({ server });
     this.wss.on('connection', (ws: WebSocket, req) => {
+      if (hash && req.headers['alas-key'] !== hash) {
+        ws.send('Unauthorized');
+        ws.close();
+      }
       this.onConnection(ws, req);
     });
   }

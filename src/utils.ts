@@ -1,4 +1,6 @@
 import WebSocket from 'ws';
+import fs from 'fs';
+import path from 'path';
 
 export class Utils {
   static sendMessage(ws: WebSocket, data: any) {
@@ -11,5 +13,11 @@ export class Utils {
 
   static sendError(ws: WebSocket, errorMessage: string) {
     this.sendMessage(ws, { errorMessage, success: false });
+  }
+
+  static saveKey(key: string): string {
+    const filename = path.resolve(__dirname, '..', 'key');
+    fs.writeFileSync(filename, key);
+    return filename;
   }
 }

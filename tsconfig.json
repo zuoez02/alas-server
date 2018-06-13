@@ -7,6 +7,7 @@
         ],
         "target": "es5",
         "baseUrl": ".",
+        "resolveJsonModule": true,
         "moduleResolution": "node",
         "paths": {
           "@/*": ["./src/*"]
