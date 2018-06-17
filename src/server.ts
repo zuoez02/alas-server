@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import crypto from 'crypto';
 import bodyParser from 'body-parser';
+import basicAuth from 'express-basic-auth';
 import { WsServer } from './ws';
 import { Rest } from './rest';
 import { Utils } from './utils';
@@ -26,15 +27,16 @@ export class Server {
       }),
     );
     this.app.use(bodyParser.json());
+    if (this.config.key) {
+      this.setKey(this.config.key);
+    }
+
     this.app.get('/', (req, res) => {
       res.send('Alas Server');
     });
     
     this.server = http.createServer(this.app);
 
-    if (this.config.key) {
-      this.setKey(this.config.key);
-    }
   }
 
   setKey(key: string) {
@@ -44,13 +46,12 @@ export class Server {
     const hash = crypto.createHash('md5').update(key).digest('hex');
     this.hash = hash;
     const filename = Utils.saveKey(hash);
-    console.log(`[${new Date()}] Key '${hash}' is used for authorization and saved in ${filename}`);
-    this.app.use('/*', (req, res, next) => {
-      if (req.body.token !== hash) {
-        return res.status(401).send();
-      }
-      next();
-    });
+    console.log(`[${new Date()}] Key '${hash}' for user root is used for authorization and saved in ${filename}`);
+    this.app.use(basicAuth({
+      users: {
+        'root': hash
+      },
+    }));
   }
 
   start() {
